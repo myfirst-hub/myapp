@@ -7,7 +7,7 @@ import { Table, Divider, Tag } from 'antd'
 import 'antd/dist/antd.css';
 import './App.css';
 
-function App() {
+function ImgExport() {
 
   const downloadCanvasIamge = (canvas, name) => {
     // 使用toDataURL方法将图像转换被base64编码的URL字符串
@@ -138,4 +138,4 @@ function App() {
   );
 }
 
-export default App;
+export default ImgExport;

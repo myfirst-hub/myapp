@@ -3,11 +3,12 @@ import React from 'react';
 import html2canvas from 'html2canvas';
 import canvas2image from "canvas2image-2";
 import { jsPDF } from 'jspdf';
-import { Table, Divider, Tag } from 'antd'
+import { Table } from 'antd'
+import domtoimage from 'dom-to-image';
 import 'antd/dist/antd.css';
 import './App.css';
 
-function App() {
+function ImgExport() {
 
   const downloadCanvasIamge = (canvas, name) => {
     // 使用toDataURL方法将图像转换被base64编码的URL字符串
@@ -43,12 +44,42 @@ function App() {
     })
   }
 
+  const downloadDomIamge = (url, name) => {
+    // 生成一个a元素
+    var a = document.createElement('a')
+    // 创建一个单击事件
+    var event = new MouseEvent('click')
+    
+    // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+    a.download = name || '下载图片名称'
+    // 将生成的URL设置为a.href属性
+    a.href = url
+    
+    // 触发a的单击事件
+    a.dispatchEvent(event)
+}
+
   const downloadImg = () => {
-    html2canvas(document.getElementById('table')).then((canvas) => {
-      downloadCanvasIamge(canvas, 'canvas')
-    }).catch(err => {
-      console.log('err................',  err)
+    // html2canvas(document.getElementById('table')).then((canvas) => {
+    //   downloadCanvasIamge(canvas, 'canvas')
+    // }).catch(err => {
+    //   console.log('err................',  err)
+    // })
+    console.log('height.................', document.getElementById('table').clientHeight)
+    console.log('width.................', document.getElementById('table').clientWidth)
+    const dom = document.getElementById('table')
+    domtoimage.toPng(dom, { bgcolor: '#fff', width: dom.clientWidth, height: dom.clientHeight, quality: 0.9 })
+    .then(function (dataUrl) {
+      console.log('dataUrl................', dataUrl)
+        // var img = new Image();
+        // img.src = dataUrl;
+        downloadDomIamge(dataUrl)
+        // document.getElementById('acceptRender').appendChild(img);
     })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
+    });
+
   }
 
   const downloadPdf = () => {
@@ -95,6 +126,7 @@ function App() {
     },
     {
       title: '住址',
+      width: 200,
       dataIndex: 'address',
       key: 'address',
     },
@@ -103,29 +135,9 @@ function App() {
   return (
     <div className="App" id="app">
       <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        <div id='textId' style={{ backgroundColor: 'black', margin: '10px', height: '300px', width: '500px', textAlign: 'center', lineHeight: '300px', border: '1px solid red' }}>
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </div>
-        <div id='textId' style={{ backgroundColor: 'red', margin: '10px', height: '300px', width: '500px', textAlign: 'center', lineHeight: '300px', border: '1px solid red' }}>
-          <p>
-            Edit112 <code>src/App.js</code> and save to reload.
-          </p>
-        </div>
-        <div id='hrefId' style={{ margin: '10px', height: '300px', width: '400px', textAlign: 'center', lineHeight: '300px', border: '1px solid blue' }}>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </div>
         <div id="table">
-          <Table dataSource={dataSource} columns={columns} />;
+          {/* <Table dataSource={dataSource} columns={columns} />; */}
+          <iframe src='https://www.xinheyun.com/web/index.php?c=template&a=index&' frameBorder="0" allow="autoplay" />
         </div>
         <button onClick={copyCanvas}>复制</button>
         <button onClick={downloadImg}>下载</button>
@@ -138,4 +150,4 @@ function App() {
   );
 }
 
-export default App;
+export default ImgExport;
